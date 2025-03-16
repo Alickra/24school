@@ -958,44 +958,72 @@
                 let startTime = null;
                 let lastY = startY;
                 let velocity = 0;
-                const friction = 0.98; 
+                const friction = 0.985; // 减小摩擦力，使动画更流畅
+                const acceleration = 0.08; // 减小加速度，使动画更平滑
+                
+                // 使用transform的硬件加速
+                slot.style.willChange = 'transform';
+                slot.style.backfaceVisibility = 'hidden';
+                slot.style.perspective = '1000px';
+                slot.style.transform = `translateY(${startY}px) translateZ(0)`;
 
                 function animate(timestamp) {
                     if (!startTime) startTime = timestamp;
                     const elapsed = timestamp - startTime;
+                    const progress = elapsed / duration;
 
                     if (elapsed < duration * 0.8) {
-                        // 加速阶段，随机化加速度增加随机性
-                        velocity = Math.min(velocity + (0.15 + Math.random() * 0.1), 30);
+                        // 加速阶段，使用更平滑的加速曲线
+                        const accelerationFactor = Math.min(progress * 2, 1); // 平滑加速因子
+                        velocity = Math.min(velocity + (acceleration + Math.random() * 0.05) * accelerationFactor, 25);
                     } 
                     else {
-                        // 减速阶段
+                        // 减速阶段，使用更平滑的减速
                         velocity *= friction;
-                        if (Math.abs(velocity) < 0.1) {
+                        if (Math.abs(velocity) < 0.05) {
                             // 如果使用真随机，直接返回预先确定的结果
                             if (useTrueRandom) {
                                 // 找到结果在数组中的位置
                                 const resultIndex = dataset.indexOf(trueRandomResult);
                                 // 计算最终位置，使其显示在中间
                                 const finalY = -(resultIndex * ITEM_HEIGHT) + ITEM_HEIGHT;
-                                slot.style.transform = `translateY(${finalY}px)`;
-                                resolve(trueRandomResult);
+                                
+                                // 使用CSS动画平滑过渡到最终位置
+                                slot.style.transition = 'transform 0.3s cubic-bezier(0.33, 1, 0.68, 1)';
+                                slot.style.transform = `translateY(${finalY}px) translateZ(0)`;
+                                
+                                // 动画结束后清除过渡
+                                setTimeout(() => {
+                                    slot.style.transition = '';
+                                    slot.style.willChange = 'auto';
+                                    resolve(trueRandomResult);
+                                }, 300);
                                 return;
                             }
                             
                             // 否则使用动画停止位置确定结果
                             const finalY = Math.round(lastY / ITEM_HEIGHT) * ITEM_HEIGHT;
-                            slot.style.transform = `translateY(${finalY}px)`;
                             
-                            // 计算最终选中的项目
-                            const index = Math.abs(Math.round(finalY / ITEM_HEIGHT)) % dataset.length;
-                            resolve(dataset[index]);
+                            // 使用CSS动画平滑过渡到最终位置
+                            slot.style.transition = 'transform 0.3s cubic-bezier(0.33, 1, 0.68, 1)';
+                            slot.style.transform = `translateY(${finalY}px) translateZ(0)`;
+                            
+                            // 动画结束后清除过渡
+                            setTimeout(() => {
+                                slot.style.transition = '';
+                                slot.style.willChange = 'auto';
+                                
+                                // 计算最终选中的项目
+                                const index = Math.abs(Math.round(finalY / ITEM_HEIGHT)) % dataset.length;
+                                resolve(dataset[index]);
+                            }, 300);
                             return;
                         }
                     }
 
+                    // 使用更精确的小数位数计算，避免抖动
                     const newY = lastY - velocity;
-                    slot.style.transform = `translateY(${newY}px)`;
+                    slot.style.transform = `translateY(${newY}px) translateZ(0)`;
                     lastY = newY;
 
                     // 循环滚动效果
@@ -1448,22 +1476,51 @@
             }
         }
 
+        // 消息队列和消息容器
+        const messageQueue = [];
+        let messageContainer = null;
+        
+        // 创建消息容器
+        function createMessageContainer() {
+            if (messageContainer) return;
+            
+            messageContainer = document.createElement('div');
+            messageContainer.style.position = 'fixed';
+            messageContainer.style.bottom = '20px';
+            messageContainer.style.left = '50%';
+            messageContainer.style.transform = 'translateX(-50%)';
+            messageContainer.style.display = 'flex';
+            messageContainer.style.flexDirection = 'column-reverse'; // 新消息在底部
+            messageContainer.style.gap = '10px';
+            messageContainer.style.zIndex = '2000';
+            messageContainer.style.width = 'auto';
+            messageContainer.style.maxWidth = '80%';
+            messageContainer.style.pointerEvents = 'none'; // 防止消息阻挡点击
+            
+            document.body.appendChild(messageContainer);
+        }
+
         // 显示临时提示信息
         function showTemporaryMessage(message, isError = false) {
+            // 确保消息容器存在
+            createMessageContainer();
+            
             // 创建提示元素
             const messageElement = document.createElement('div');
             messageElement.textContent = message;
-            messageElement.style.position = 'fixed';
-            messageElement.style.bottom = '20px';
-            messageElement.style.left = '50%';
-            messageElement.style.transform = 'translateX(-50%)';
             messageElement.style.padding = '10px 20px';
             messageElement.style.borderRadius = '5px';
             messageElement.style.color = 'white';
             messageElement.style.fontSize = '16px';
-            messageElement.style.zIndex = '2000';
             messageElement.style.opacity = '0';
-            messageElement.style.transition = 'opacity 0.3s';
+            messageElement.style.transition = 'opacity 0.25s ease, transform 0.25s cubic-bezier(0.215, 0.61, 0.355, 1)';
+            messageElement.style.boxShadow = '0 3px 10px rgba(0, 0, 0, 0.2)';
+            messageElement.style.transform = 'translateY(20px) translateZ(0)';
+            messageElement.style.width = 'fit-content';
+            messageElement.style.margin = '0 auto';
+            messageElement.style.willChange = 'transform, opacity'; // 提示浏览器需要优化这些属性
+            messageElement.style.backfaceVisibility = 'hidden'; // 增强硬件加速
+            messageElement.style.perspective = '1000px'; // 3D空间效果，增强硬件加速
             
             // 根据是否为错误设置不同的背景色
             if (isError) {
@@ -1472,21 +1529,43 @@
                 messageElement.style.background = 'rgba(46, 204, 113, 0.9)';
             }
             
-            // 添加到页面
-            document.body.appendChild(messageElement);
+            // 添加到容器
+            messageContainer.appendChild(messageElement);
             
-            // 显示提示
-            setTimeout(() => {
+            // 强制回流，确保动画正常执行
+            void messageElement.offsetWidth;
+            
+            // 显示提示（淡入 + 上移）
+            requestAnimationFrame(() => {
                 messageElement.style.opacity = '1';
-            }, 10);
+                messageElement.style.transform = 'translateY(0) translateZ(0)';
+            });
             
             // 3秒后隐藏并移除
-            setTimeout(() => {
+            const removeTimeout = setTimeout(() => {
                 messageElement.style.opacity = '0';
-                setTimeout(() => {
-                    document.body.removeChild(messageElement);
+                messageElement.style.transform = 'translateY(-20px) translateZ(0)';
+                
+                const animationTimeout = setTimeout(() => {
+                    if (messageElement.parentNode) {
+                        messageElement.parentNode.removeChild(messageElement);
+                    }
+                    
+                    // 如果没有更多消息，移除容器
+                    if (messageContainer && messageContainer.children.length === 0) {
+                        document.body.removeChild(messageContainer);
+                        messageContainer = null;
+                    }
                 }, 300);
+                
+                // 存储动画超时引用，以便在需要时清除
+                messageElement._animationTimeout = animationTimeout;
             }, 3000);
+            
+            // 存储移除超时引用，以便在需要时清除
+            messageElement._removeTimeout = removeTimeout;
+            
+            return messageElement;
         }
 
         // 科目管理事件监听器
