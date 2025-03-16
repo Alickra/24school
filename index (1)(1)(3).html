@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>抽签系统</title>
+    <style>
+        /* 新增设置按钮样式 */
+        .settings-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 20px;
+            background: #ff4757;
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 1000;
+        }
+
+        .settings-btn:hover {
+            background: #ff6b81;
+            transform: scale(1.05);
+        }
+
+        .slot.wide-column {
+            width: 300px; 
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #1a1a1a;
+            margin: 0;
+            color: white;
+            font-family: Arial;
+            position: relative; /* 为固定定位按钮提供参考 */
+        }
+
+        .slots-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .slot {
+            width: 150px;
+            height: 50px;
+            overflow: hidden;
+            border-radius: 10px;
+            background: #2c2c2c;
+            position: relative;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+        }
+
+        .slot::before,
+        .slot::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 30%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .slot::before {
+            top: 0;
+            background: linear-gradient(to bottom, #1a1a1a 0%, transparent 100%);
+        }
+
+        .slot::after {
+            bottom: 0;
+            background: linear-gradient(to top, #1a1a1a 0%, transparent 100%);
+        }
+
+        .slot-content {
+            position: absolute;
+            width: 100%;
+        }
+
+        .slot-item {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            padding: 0 8px;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .spin-button {
+            padding: 12px 35px;
+            background: #ff4757;
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .spin-button:hover {
+            background: #ff6b81;
+            transform: scale(1.05);
+        }
+
+        #result {
+            margin-top: 20px;
+            text-align: center;
+            min-height: 60px;
+            font-size: 18px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        /* 设置面板样式 */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .settings-content {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 25px;
+            width: 80%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+        }
+
+        .settings-header h2 {
+            margin: 0;
+            color: #ff4757;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .settings-section {
+            margin-bottom: 20px;
+        }
+
+        .settings-section h3 {
+            margin-top: 0;
+            color: #ddd;
+        }
+
+        .settings-section textarea {
+            width: 100%;
+            height: 120px;
+            background: #3a3a3a;
+            border: 1px solid #555;
+            border-radius: 5px;
+            color: white;
+            padding: 10px;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .settings-section p {
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .settings-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #444;
+        }
+
+        .save-btn {
+            padding: 10px 25px;
+            background: #ff4757;
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .save-btn:hover {
+            background: #ff6b81;
+        }
+
+        .reset-btn {
+            padding: 10px 25px;
+            background: #555;
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-right: 10px;
+        }
+
+        .reset-btn:hover {
+            background: #777;
+        }
+
+        /* 添加权重设置样式 */
+        .weight-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            color: white;
+        }
+
+        .weight-table th, .weight-table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        .weight-table th {
+            color: #ddd;
+            font-weight: normal;
+        }
+
+        .weight-input {
+            width: 60px;
+            background: #3a3a3a;
+            border: 1px solid #555;
+            border-radius: 5px;
+            color: white;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .tab-container {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #444;
+        }
+
+        .tab {
+            padding: 8px 15px;
+            cursor: pointer;
+            color: #aaa;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            margin-right: 10px;
+        }
+
+        .tab.active {
+            color: #ff4757;
+            border-bottom: 2px solid #ff4757;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 添加历史记录和统计分析样式 */
+        .stats-container {
+            margin-top: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 15px;
+            width: 80%;
+            max-width: 500px;
+            display: none;
+        }
+
+        .stats-title {
+            color: #ff4757;
+            margin-top: 0;
+            font-size: 18px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 8px;
+        }
+
+        .stats-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .stats-item {
+            background: #2c2c2c;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        .toggle-stats {
+            background: none;
+            border: none;
+            color: #aaa;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .toggle-stats:hover {
+            color: white;
+        }
+
+        /* 添加大标题样式 */
+        .main-title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ff4757;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+            animation: titleGlow 2s infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from {
+                text-shadow: 0 0 5px rgba(255, 71, 87, 0.5);
+            }
+            to {
+                text-shadow: 0 0 15px rgba(255, 71, 87, 0.8);
+            }
+        }
+
+        /* 自定义滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #2c2c2c;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* 设置面板滚动条特殊样式 */
+        .settings-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .settings-content::-webkit-scrollbar-track {
+            background: #222;
+            border-radius: 4px;
+            margin: 5px;
+        }
+
+        .settings-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
+            border: 1px solid #333;
+        }
+
+        .settings-content::-webkit-scrollbar-thumb:hover {
+            background: #ff4757;
+        }
+
+        /* 科目按钮样式 */
+        .subject-btn {
+            background: #333;
+            border: 1px solid #555;
+            border-radius: 5px;
+            color: white;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: 0.3s;
+        }
+
+        .subject-btn:hover {
+            background: #444;
+        }
+
+        .subject-btn.active {
+            background: #ff4757;
+            border-color: #ff4757;
+        }
+
+        .subject-btn .delete-icon {
+            margin-left: 8px;
+            opacity: 0.6;
+            transition: 0.3s;
+        }
+
+        .subject-btn:hover .delete-icon {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <button class="settings-btn" id="settingsBtn">设置</button>
+    <h1 class="main-title">二十四中学至尊抽签</h1>
+    <div id="currentSubjectDisplay" style="margin-bottom: 20px; color: #ff4757; font-size: 18px; font-weight: bold;"></div>
+    <button class="spin-button" id="spinBtn">开始抽签</button>
+    <div class="slots-container">
+        <div class="slot">
+            <div class="slot-content" id="slot1"></div>
+        </div>
+        <div class="slot">
+            <div class="slot-content" id="slot2"></div>
+        </div>
+        <div class="slot wide-column">
+            <div class="slot-content" id="slot3"></div>
+        </div>
+    </div>
+    <div id="result"></div>
+
+    <!-- 统计分析容器 -->
+    <div class="stats-container" id="statsContainer">
+        <h3 class="stats-title">抽签统计</h3>
+        <div class="stats-content" id="statsContent"></div>
+    </div>
+    <button class="toggle-stats" id="toggleStats">显示/隐藏统计</button>
+
+    <!-- 设置面板 -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2>抽签设置</h2>
+                <button class="close-btn" id="closeSettings">×</button>
+            </div>
+            <div class="settings-section">
+                <h3>科目管理</h3>
+                <p>保存当前配置为科目，或切换到已保存的科目配置</p>
+                <div style="display: flex; gap: 10px; margin-top: 15px; align-items: center;">
+                    <input type="text" id="subjectName" placeholder="输入科目名称" style="flex: 1; background: #3a3a3a; border: 1px solid #555; border-radius: 5px; color: white; padding: 8px; font-size: 15px;">
+                    <button id="saveSubject" style="background: #ff4757; border: none; border-radius: 5px; color: white; padding: 8px 15px; cursor: pointer;">保存科目</button>
+                </div>
+                <div style="margin-top: 15px;">
+                    <h4 style="color: #ddd; margin-bottom: 10px;">已保存科目</h4>
+                    <div id="subjectsList" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h3>学生名单</h3>
+                <textarea id="studentsInput"></textarea>
+                <p>每个名字用逗号分隔，例如：张三,李四,王五</p>
+            </div>
+            <div class="settings-section">
+                <h3>篇目列表</h3>
+                <div class="tab-container">
+                    <button class="tab active" data-tab="textsBasic">基本设置</button>
+                    <button class="tab" data-tab="textsAdvanced">高级设置 (概率)</button>
+                </div>
+                <div class="tab-content active" id="textsBasic">
+                    <textarea id="textsInput"></textarea>
+                    <p>每个篇目用逗号分隔，例如：蜀道难,蜀相,望海潮</p>
+                </div>
+                <div class="tab-content" id="textsAdvanced">
+                    <p>调整每个篇目被抽中的概率权重（数值越大，被抽中的概率越高）</p>
+                    <table class="weight-table" id="textsWeightTable">
+                        <thead>
+                            <tr>
+                                <th>篇目</th>
+                                <th>权重</th>
+                                <th>概率</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h3>惩罚内容</h3>
+                <div class="tab-container">
+                    <button class="tab active" data-tab="punishmentsBasic">基本设置</button>
+                    <button class="tab" data-tab="punishmentsAdvanced">高级设置 (概率)</button>
+                </div>
+                <div class="tab-content active" id="punishmentsBasic">
+                    <textarea id="punishmentsInput"></textarea>
+                    <p>每个惩罚用逗号分隔，例如：演唱绿色,演唱荷塘月色,讲一段故事</p>
+                </div>
+                <div class="tab-content" id="punishmentsAdvanced">
+                    <p>调整每个惩罚被抽中的概率权重（数值越大，被抽中的概率越高）</p>
+                    <table class="weight-table" id="punishmentsWeightTable">
+                        <thead>
+                            <tr>
+                                <th>惩罚</th>
+                                <th>权重</th>
+                                <th>概率</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h3>抽签时长设置 (毫秒)</h3>
+                <div style="display: flex; gap: 20px; margin-top: 15px;">
+                    <div style="flex: 1;">
+                        <div style="margin-bottom: 8px;">学生抽签时长:</div>
+                        <input type="number" id="duration1" min="1000" max="30000" step="1000" style="width: 100%; background: #3a3a3a; border: 1px solid #555; border-radius: 5px; color: white; padding: 8px; font-size: 15px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="margin-bottom: 8px;">篇目抽签时长:</div>
+                        <input type="number" id="duration2" min="1000" max="30000" step="1000" style="width: 100%; background: #3a3a3a; border: 1px solid #555; border-radius: 5px; color: white; padding: 8px; font-size: 15px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="margin-bottom: 8px;">惩罚抽签时长:</div>
+                        <input type="number" id="duration3" min="1000" max="30000" step="1000" style="width: 100%; background: #3a3a3a; border: 1px solid #555; border-radius: 5px; color: white; padding: 8px; font-size: 15px;">
+                    </div>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h3>公平性设置</h3>
+                <div style="display: flex; align-items: center; margin-top: 10px;">
+                    <input type="checkbox" id="enableTrueRandom" style="margin-right: 10px; width: 16px; height: 16px;">
+                    <label for="enableTrueRandom">使用更公平的随机算法（推荐）</label>
+                </div>
+                <p>启用此选项可以确保每个选项被抽中的概率完全相等</p>
+            </div>
+            <div class="settings-footer">
+                <button class="reset-btn" id="resetSettings">恢复默认</button>
+                <button class="save-btn" id="saveSettings">保存设置</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 默认数据
+        const DEFAULT_STUDENTS = ["张一","张二","张三","张四","张五","张六","张七","张八","张九","张十","张十一","张十二","张十三","张十四","张十五","张十六","张十七","张十八","张十九","张二十","张二十一","张二十二","张二十三","张二十四","张二十五","张二十六","张二十七","张二十八","张二十九","张三十","张三十一","张三十二","张三十三","张三十四","张三十五","张三十六","张三十七","张三十八","张三十九","张四十","张四十一","张四十二","张四十三","张四十四","张四十五","张四十六","张四十七"];
+        const DEFAULT_TEXTS = ["蜀道难", "蜀相", "望海潮", "扬州慢", "全部"];
+        const DEFAULT_PUNISHMENTS = ["演唱绿色", "演唱荷塘月色", "讲一段八卦/故事", "站到背会", "抄写1遍"];
+        const DEFAULT_DURATIONS = [18000, 20000, 22000];
+
+        // 当前使用的数据
+        let students = [...DEFAULT_STUDENTS];
+        let texts = [...DEFAULT_TEXTS];
+        let punishments = [...DEFAULT_PUNISHMENTS];
+        let durations = [...DEFAULT_DURATIONS];
+        let enableTrueRandom = true; // 默认启用真随机
+
+        // 权重数据
+        let textsWeights = {};
+        let punishmentsWeights = {};
+
+        const ITEM_HEIGHT = 50;
+        const VISIBLE_ITEMS = 1; 
+        let isRunning = false;
+
+        // 统计数据
+        let statistics = {
+            students: {},
+            texts: {},
+            punishments: {}
+        };
+
+        // DOM元素
+        const slot1 = document.getElementById('slot1');
+        const slot2 = document.getElementById('slot2');
+        const slot3 = document.getElementById('slot3');
+        const result = document.getElementById('result');
+        const spinBtn = document.getElementById('spinBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeSettings = document.getElementById('closeSettings');
+        const saveSettings = document.getElementById('saveSettings');
+        const resetSettings = document.getElementById('resetSettings');
+        const studentsInput = document.getElementById('studentsInput');
+        const textsInput = document.getElementById('textsInput');
+        const punishmentsInput = document.getElementById('punishmentsInput');
+        const duration1 = document.getElementById('duration1');
+        const duration2 = document.getElementById('duration2');
+        const duration3 = document.getElementById('duration3');
+        const enableTrueRandomCheckbox = document.getElementById('enableTrueRandom');
+        const statsContainer = document.getElementById('statsContainer');
+        const statsContent = document.getElementById('statsContent');
+        const toggleStats = document.getElementById('toggleStats');
+        const subjectNameInput = document.getElementById('subjectName');
+        const saveSubjectBtn = document.getElementById('saveSubject');
+        const subjectsList = document.getElementById('subjectsList');
+        const currentSubjectDisplay = document.getElementById('currentSubjectDisplay');
+
+        // 当前选中的科目
+        let currentSubject = null;
+
+        // 更新当前科目显示
+        function updateCurrentSubjectDisplay() {
+            if (currentSubject) {
+                currentSubjectDisplay.textContent = `当前科目: ${currentSubject}`;
+                currentSubjectDisplay.style.display = 'block';
+            } else {
+                currentSubjectDisplay.textContent = '';
+                currentSubjectDisplay.style.display = 'none';
+            }
+        }
+
+        // 加载本地存储的设置
+        function loadSettings() {
+            try {
+                const savedSettings = localStorage.getItem('slotSettings');
+                if (savedSettings) {
+                    const settings = JSON.parse(savedSettings);
+                    students = settings.students || [...DEFAULT_STUDENTS];
+                    texts = settings.texts || [...DEFAULT_TEXTS];
+                    punishments = settings.punishments || [...DEFAULT_PUNISHMENTS];
+                    durations = settings.durations || [...DEFAULT_DURATIONS];
+                    enableTrueRandom = settings.enableTrueRandom !== undefined ? settings.enableTrueRandom : true;
+                    textsWeights = settings.textsWeights || {};
+                    punishmentsWeights = settings.punishmentsWeights || {};
+                    currentSubject = settings.currentSubject || null;
+                }
+
+                // 初始化权重（如果没有设置）
+                initializeWeights();
+
+                // 加载统计数据
+                const savedStats = localStorage.getItem('slotStatistics');
+                if (savedStats) {
+                    statistics = JSON.parse(savedStats);
+                }
+            } catch (error) {
+                console.error('加载设置失败:', error);
+                // 如果加载失败，使用默认设置
+                students = [...DEFAULT_STUDENTS];
+                texts = [...DEFAULT_TEXTS];
+                punishments = [...DEFAULT_PUNISHMENTS];
+                durations = [...DEFAULT_DURATIONS];
+                enableTrueRandom = true;
+                textsWeights = {};
+                punishmentsWeights = {};
+                initializeWeights();
+            }
+
+            // 更新设置面板中的值
+            updateSettingsUI();
+            
+            // 初始化槽位
+            initSlots();
+
+            // 更新统计显示
+            updateStatistics();
+        }
+
+        // 初始化权重
+        function initializeWeights() {
+            // 为篇目设置默认权重
+            texts.forEach(text => {
+                if (textsWeights[text] === undefined) {
+                    textsWeights[text] = 1;
+                }
+            });
+
+            // 为惩罚设置默认权重
+            punishments.forEach(punishment => {
+                if (punishmentsWeights[punishment] === undefined) {
+                    punishmentsWeights[punishment] = 1;
+                }
+            });
+        }
+
+        // 更新设置面板UI
+        function updateSettingsUI() {
+            studentsInput.value = students.join(',');
+            textsInput.value = texts.join(',');
+            punishmentsInput.value = punishments.join(',');
+            duration1.value = durations[0];
+            duration2.value = durations[1];
+            duration3.value = durations[2];
+            enableTrueRandomCheckbox.checked = enableTrueRandom;
+
+            // 更新权重表格
+            updateWeightTables();
+        }
+
+        // 更新权重表格
+        function updateWeightTables() {
+            // 更新篇目权重表格
+            const textsTable = document.getElementById('textsWeightTable').querySelector('tbody');
+            textsTable.innerHTML = '';
+            
+            // 计算总权重
+            const totalTextsWeight = texts.reduce((sum, text) => sum + (textsWeights[text] || 1), 0);
+            
+            // 添加每个篇目的行
+            texts.forEach(text => {
+                const weight = textsWeights[text] || 1;
+                const probability = ((weight / totalTextsWeight) * 100).toFixed(1);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${text}</td>
+                    <td><input type="number" class="weight-input" value="${weight}" min="0" step="0.1" data-item="${text}" data-type="text"></td>
+                    <td>${probability}%</td>
+                `;
+                textsTable.appendChild(row);
+            });
+            
+            // 添加事件监听器
+            textsTable.querySelectorAll('.weight-input').forEach(input => {
+                input.addEventListener('change', updateItemWeight);
+            });
+            
+            // 更新惩罚权重表格
+            const punishmentsTable = document.getElementById('punishmentsWeightTable').querySelector('tbody');
+            punishmentsTable.innerHTML = '';
+            
+            // 计算总权重
+            const totalPunishmentsWeight = punishments.reduce((sum, punishment) => sum + (punishmentsWeights[punishment] || 1), 0);
+            
+            // 添加每个惩罚的行
+            punishments.forEach(punishment => {
+                const weight = punishmentsWeights[punishment] || 1;
+                const probability = ((weight / totalPunishmentsWeight) * 100).toFixed(1);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${punishment}</td>
+                    <td><input type="number" class="weight-input" value="${weight}" min="0" step="0.1" data-item="${punishment}" data-type="punishment"></td>
+                    <td>${probability}%</td>
+                `;
+                punishmentsTable.appendChild(row);
+            });
+            
+            // 添加事件监听器
+            punishmentsTable.querySelectorAll('.weight-input').forEach(input => {
+                input.addEventListener('change', updateItemWeight);
+            });
+        }
+
+        // 更新项目权重
+        function updateItemWeight(e) {
+            const input = e.target;
+            const item = input.dataset.item;
+            const type = input.dataset.type;
+            const weight = parseFloat(input.value) || 0;
+            
+            if (weight < 0) {
+                input.value = 0;
+                return;
+            }
+            
+            // 更新权重
+            if (type === 'text') {
+                textsWeights[item] = weight;
+            } else if (type === 'punishment') {
+                punishmentsWeights[item] = weight;
+            }
+            
+            // 重新计算概率并更新显示
+            updateWeightTables();
+        }
+
+        // 保存设置
+        function saveSettingsToStorage() {
+            try {
+                // 从输入框获取值
+                students = studentsInput.value.split(',').map(item => item.trim()).filter(item => item);
+                texts = textsInput.value.split(',').map(item => item.trim()).filter(item => item);
+                punishments = punishmentsInput.value.split(',').map(item => item.trim()).filter(item => item);
+                durations = [
+                    parseInt(duration1.value) || DEFAULT_DURATIONS[0],
+                    parseInt(duration2.value) || DEFAULT_DURATIONS[1],
+                    parseInt(duration3.value) || DEFAULT_DURATIONS[2]
+                ];
+                enableTrueRandom = enableTrueRandomCheckbox.checked;
+
+                // 验证数据有效性
+                if (students.length === 0) {
+                    alert('学生名单不能为空！');
+                    return false;
+                }
+                if (texts.length === 0) {
+                    alert('篇目列表不能为空！');
+                    return false;
+                }
+                if (punishments.length === 0) {
+                    alert('惩罚内容不能为空！');
+                    return false;
+                }
+
+                // 清理不再使用的权重
+                const newTextsWeights = {};
+                texts.forEach(text => {
+                    newTextsWeights[text] = textsWeights[text] || 1;
+                });
+                textsWeights = newTextsWeights;
+
+                const newPunishmentsWeights = {};
+                punishments.forEach(punishment => {
+                    newPunishmentsWeights[punishment] = punishmentsWeights[punishment] || 1;
+                });
+                punishmentsWeights = newPunishmentsWeights;
+
+                // 保存到本地存储
+                const settings = {
+                    students,
+                    texts,
+                    punishments,
+                    durations,
+                    enableTrueRandom,
+                    textsWeights,
+                    punishmentsWeights,
+                    currentSubject
+                };
+                localStorage.setItem('slotSettings', JSON.stringify(settings));
+                
+                // 更新权重表格
+                updateWeightTables();
+                
+                // 重新初始化槽位
+                initSlots();
+                return true;
+            } catch (error) {
+                console.error('保存设置失败:', error);
+                alert('保存设置失败: ' + error.message);
+                return false;
+            }
+        }
+
+        // 重置设置
+        function resetSettingsToDefault() {
+            students = [...DEFAULT_STUDENTS];
+            texts = [...DEFAULT_TEXTS];
+            punishments = [...DEFAULT_PUNISHMENTS];
+            durations = [...DEFAULT_DURATIONS];
+            enableTrueRandom = true;
+            textsWeights = {};
+            punishmentsWeights = {};
+            
+            // 初始化权重
+            initializeWeights();
+            
+            updateSettingsUI();
+            localStorage.removeItem('slotSettings');
+            
+            // 重新初始化槽位
+            initSlots();
+        }
+
+        // 初始化所有槽位
+        function initSlots() {
+            initSlot(slot1, students, 100);
+            initSlot(slot2, texts, 50);
+            initSlot(slot3, punishments, 50);
+        }
+
+        // 打乱数组
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // 初始化单个槽位
+        function initSlot(slot, data, repeatTimes) {
+            const content = Array(repeatTimes).fill(data).flat();
+            slot.innerHTML = content.map(item => 
+                `<div class="slot-item">${item}</div>`
+            ).join('');
+            slot.style.transform = `translateY(${-(content.length * ITEM_HEIGHT / 2)}px)`;
+        }
+
+        // 获取真正随机的结果
+        function getTrueRandomResult(dataset, weights = null) {
+            if (!weights) {
+                // 如果没有提供权重，使用均匀分布
+                return dataset[Math.floor(Math.random() * dataset.length)];
+            }
+            
+            // 计算总权重
+            let totalWeight = 0;
+            const weightArray = dataset.map(item => {
+                const weight = weights[item] || 1;
+                totalWeight += weight;
+                return weight;
+            });
+            
+            // 生成一个0到总权重之间的随机数
+            const randomValue = Math.random() * totalWeight;
+            
+            // 根据权重选择项目
+            let cumulativeWeight = 0;
+            for (let i = 0; i < dataset.length; i++) {
+                cumulativeWeight += weightArray[i];
+                if (randomValue < cumulativeWeight) {
+                    return dataset[i];
+                }
+            }
+            
+            // 防止浮点数精度问题，返回最后一项
+            return dataset[dataset.length - 1];
+        }
+
+        // 动画效果
+        async function animateSlot(slot, dataset, duration, useTrueRandom = false, weights = null) {
+            return new Promise(resolve => {
+                // 如果使用真随机，提前确定结果
+                const trueRandomResult = useTrueRandom ? getTrueRandomResult(dataset, weights) : null;
+                
+                const startY = parseInt(slot.style.transform.match(/-?\d+/)[0]) || 0;
+                
+                // 随机选择一个目标索引
+                const targetIndex = Math.floor(Math.random() * dataset.length);
+                // 随机化偏移量，增加随机性
+                const targetOffset = Math.floor(Math.random() * 3 + 1) * ITEM_HEIGHT;
+                const targetY = -(targetIndex * ITEM_HEIGHT) + targetOffset;
+
+                let startTime = null;
+                let lastY = startY;
+                let velocity = 0;
+                const friction = 0.98; 
+
+                function animate(timestamp) {
+                    if (!startTime) startTime = timestamp;
+                    const elapsed = timestamp - startTime;
+
+                    if (elapsed < duration * 0.8) {
+                        // 加速阶段，随机化加速度增加随机性
+                        velocity = Math.min(velocity + (0.15 + Math.random() * 0.1), 30);
+                    } 
+                    else {
+                        // 减速阶段
+                        velocity *= friction;
+                        if (Math.abs(velocity) < 0.1) {
+                            // 如果使用真随机，直接返回预先确定的结果
+                            if (useTrueRandom) {
+                                // 找到结果在数组中的位置
+                                const resultIndex = dataset.indexOf(trueRandomResult);
+                                // 计算最终位置，使其显示在中间
+                                const finalY = -(resultIndex * ITEM_HEIGHT) + ITEM_HEIGHT;
+                                slot.style.transform = `translateY(${finalY}px)`;
+                                resolve(trueRandomResult);
+                                return;
+                            }
+                            
+                            // 否则使用动画停止位置确定结果
+                            const finalY = Math.round(lastY / ITEM_HEIGHT) * ITEM_HEIGHT;
+                            slot.style.transform = `translateY(${finalY}px)`;
+                            
+                            // 计算最终选中的项目
+                            const index = Math.abs(Math.round(finalY / ITEM_HEIGHT)) % dataset.length;
+                            resolve(dataset[index]);
+                            return;
+                        }
+                    }
+
+                    const newY = lastY - velocity;
+                    slot.style.transform = `translateY(${newY}px)`;
+                    lastY = newY;
+
+                    // 循环滚动效果
+                    if (Math.abs(newY) > dataset.length * ITEM_HEIGHT) {
+                        lastY = newY % (dataset.length * ITEM_HEIGHT);
+                    }
+
+                    requestAnimationFrame(animate);
+                }
+
+                requestAnimationFrame(animate);
+            });
+        }
+
+        // 开始抽签
+        async function startSpin() {
+            if (isRunning) return;
+            isRunning = true;
+            spinBtn.style.display = 'none'; // 隐藏按钮
+            result.innerHTML = "🎰 抽签进行中...";
+
+            const shuffledStudents = shuffleArray(students);
+            const shuffledTexts = shuffleArray(texts);
+            const shuffledPunishments = shuffleArray(punishments);
+
+            initSlot(slot1, shuffledStudents, 100);
+            initSlot(slot2, shuffledTexts, 50);
+            initSlot(slot3, shuffledPunishments, 50);
+
+            try {
+            const results = await Promise.all([
+                    animateSlot(slot1, shuffledStudents, durations[0], enableTrueRandom),
+                    animateSlot(slot2, shuffledTexts, durations[1], enableTrueRandom, textsWeights),
+                    animateSlot(slot3, shuffledPunishments, durations[2], enableTrueRandom, punishmentsWeights)
+            ]);
+
+            result.innerHTML = `
+                <div>🎉 抽中：${results[0]}</div>
+                <div>📖 篇目：${results[1]}</div>
+                <div>⚡ 惩罚：${results[2]}</div>
+            `;
+
+                // 保存抽签历史记录
+                saveHistory(results);
+                
+                // 更新统计数据
+                updateStatisticsData(results);
+            } catch (error) {
+                console.error('抽签过程出错:', error);
+                result.innerHTML = "抽签过程出错，请重试";
+            } finally {
+                spinBtn.style.display = 'inline-block'; // 重新显示按钮
+            isRunning = false;
+            }
+        }
+
+        // 更新统计数据
+        function updateStatisticsData(results) {
+            // 更新学生统计
+            if (!statistics.students[results[0]]) {
+                statistics.students[results[0]] = 1;
+            } else {
+                statistics.students[results[0]]++;
+            }
+            
+            // 更新篇目统计
+            if (!statistics.texts[results[1]]) {
+                statistics.texts[results[1]] = 1;
+            } else {
+                statistics.texts[results[1]]++;
+            }
+            
+            // 更新惩罚统计
+            if (!statistics.punishments[results[2]]) {
+                statistics.punishments[results[2]] = 1;
+            } else {
+                statistics.punishments[results[2]]++;
+            }
+            
+            // 保存统计数据
+            localStorage.setItem('slotStatistics', JSON.stringify(statistics));
+            
+            // 更新统计显示
+            updateStatistics();
+        }
+
+        // 更新统计显示
+        function updateStatistics() {
+            statsContent.innerHTML = '';
+            
+            // 创建统计标题
+            const createStatSection = (title, data, type) => {
+                const section = document.createElement('div');
+                section.style.width = '100%';
+                section.style.marginBottom = '15px';
+                
+                const sectionTitle = document.createElement('h4');
+                sectionTitle.textContent = title;
+                sectionTitle.style.margin = '5px 0';
+                sectionTitle.style.color = '#ddd';
+                section.appendChild(sectionTitle);
+                
+                // 获取总次数
+                let totalCount = 0;
+                Object.values(data).forEach(count => {
+                    totalCount += count;
+                });
+                
+                // 如果没有数据，显示提示
+                if (totalCount === 0) {
+                    const noData = document.createElement('div');
+                    noData.textContent = '暂无数据';
+                    noData.style.color = '#888';
+                    noData.style.fontSize = '14px';
+                    section.appendChild(noData);
+                    return section;
+                }
+                
+                // 创建统计项
+                const itemsContainer = document.createElement('div');
+                itemsContainer.style.display = 'flex';
+                itemsContainer.style.flexWrap = 'wrap';
+                itemsContainer.style.gap = '8px';
+                
+                // 获取前5个最常见的项目
+                const sortedItems = Object.entries(data)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5);
+                
+                sortedItems.forEach(([item, count]) => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'stats-item';
+                    const percentage = ((count / totalCount) * 100).toFixed(1);
+                    itemElement.textContent = `${item}: ${count}次 (${percentage}%)`;
+                    itemsContainer.appendChild(itemElement);
+                });
+                
+                section.appendChild(itemsContainer);
+                
+                // 添加重置按钮
+                const resetButton = document.createElement('button');
+                resetButton.textContent = '重置此统计';
+                resetButton.style.background = '#555';
+                resetButton.style.border = 'none';
+                resetButton.style.borderRadius = '5px';
+                resetButton.style.color = 'white';
+                resetButton.style.padding = '5px 10px';
+                resetButton.style.marginTop = '10px';
+                resetButton.style.cursor = 'pointer';
+                resetButton.style.fontSize = '12px';
+                
+                resetButton.addEventListener('click', () => {
+                    if (confirm(`确定要重置${title}的统计数据吗？`)) {
+                        statistics[type] = {};
+                        localStorage.setItem('slotStatistics', JSON.stringify(statistics));
+                        updateStatistics();
+                    }
+                });
+                
+                section.appendChild(resetButton);
+                
+                return section;
+            };
+            
+            // 添加各部分统计
+            statsContent.appendChild(createStatSection('学生抽中统计', statistics.students, 'students'));
+            statsContent.appendChild(createStatSection('篇目抽中统计', statistics.texts, 'texts'));
+            statsContent.appendChild(createStatSection('惩罚抽中统计', statistics.punishments, 'punishments'));
+            
+            // 添加全部重置按钮
+            const resetAllButton = document.createElement('button');
+            resetAllButton.textContent = '重置所有统计数据';
+            resetAllButton.style.background = '#ff4757';
+            resetAllButton.style.border = 'none';
+            resetAllButton.style.borderRadius = '5px';
+            resetAllButton.style.color = 'white';
+            resetAllButton.style.padding = '8px 15px';
+            resetAllButton.style.marginTop = '10px';
+            resetAllButton.style.cursor = 'pointer';
+            resetAllButton.style.width = '100%';
+            
+            resetAllButton.addEventListener('click', () => {
+                if (confirm('确定要重置所有统计数据吗？')) {
+                    statistics = {
+                        students: {},
+                        texts: {},
+                        punishments: {}
+                    };
+                    localStorage.setItem('slotStatistics', JSON.stringify(statistics));
+                    updateStatistics();
+                }
+            });
+            
+            statsContent.appendChild(resetAllButton);
+        }
+
+        // 保存抽签历史
+        function saveHistory(results) {
+            try {
+                const history = JSON.parse(localStorage.getItem('slotHistory') || '[]');
+                history.push({
+                    timestamp: new Date().toISOString(),
+                    student: results[0],
+                    text: results[1],
+                    punishment: results[2]
+                });
+                
+                // 只保留最近的50条记录
+                if (history.length > 50) {
+                    history.shift();
+                }
+                
+                localStorage.setItem('slotHistory', JSON.stringify(history));
+            } catch (error) {
+                console.error('保存历史记录失败:', error);
+            }
+        }
+
+        // 事件监听器
+        spinBtn.addEventListener('click', startSpin);
+        
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.style.display = 'flex';
+        });
+        
+        closeSettings.addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+        });
+        
+        saveSettings.addEventListener('click', () => {
+            if (saveSettingsToStorage()) {
+                settingsModal.style.display = 'none';
+            }
+        });
+        
+        resetSettings.addEventListener('click', resetSettingsToDefault);
+        
+        toggleStats.addEventListener('click', () => {
+            if (statsContainer.style.display === 'block') {
+                statsContainer.style.display = 'none';
+            } else {
+                statsContainer.style.display = 'block';
+                updateStatistics();
+            }
+        });
+        
+        // 标签切换事件
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // 获取当前标签组
+                const tabGroup = this.parentElement;
+                
+                // 移除所有标签的活动状态
+                tabGroup.querySelectorAll('.tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                
+                // 添加当前标签的活动状态
+                this.classList.add('active');
+                
+                // 获取目标内容ID
+                const targetId = this.dataset.tab;
+                
+                // 隐藏所有内容
+                const tabContents = tabGroup.parentElement.querySelectorAll('.tab-content');
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // 显示目标内容
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+        
+        // 点击模态框外部关闭
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.style.display = 'none';
+            }
+        });
+
+        // 按ESC键关闭设置面板
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && settingsModal.style.display === 'flex') {
+                settingsModal.style.display = 'none';
+            }
+        });
+
+        // 科目管理功能
+        function loadSubjects() {
+            try {
+                const savedSubjects = localStorage.getItem('slotSubjects');
+                if (savedSubjects) {
+                    const subjects = JSON.parse(savedSubjects);
+                    updateSubjectsList(subjects);
+                } else {
+                    updateSubjectsList({});
+                }
+            } catch (error) {
+                console.error('加载科目失败:', error);
+                updateSubjectsList({});
+            }
+        }
+
+        function updateSubjectsList(subjects) {
+            subjectsList.innerHTML = '';
+            
+            if (Object.keys(subjects).length === 0) {
+                const noSubjects = document.createElement('div');
+                noSubjects.textContent = '暂无保存的科目';
+                noSubjects.style.color = '#888';
+                subjectsList.appendChild(noSubjects);
+                return;
+            }
+            
+            for (const [name, config] of Object.entries(subjects)) {
+                const subjectBtn = document.createElement('div');
+                subjectBtn.className = 'subject-btn';
+                if (currentSubject === name) {
+                    subjectBtn.classList.add('active');
+                }
+                
+                const btnContent = document.createElement('span');
+                btnContent.textContent = name;
+                subjectBtn.appendChild(btnContent);
+                
+                const deleteIcon = document.createElement('span');
+                deleteIcon.className = 'delete-icon';
+                deleteIcon.innerHTML = '×';
+                deleteIcon.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteSubject(name);
+                });
+                subjectBtn.appendChild(deleteIcon);
+                
+                subjectBtn.addEventListener('click', () => {
+                    loadSubjectConfig(name, config);
+                });
+                
+                subjectsList.appendChild(subjectBtn);
+            }
+        }
+
+        function saveCurrentAsSubject() {
+            const name = subjectNameInput.value.trim();
+            if (!name) {
+                alert('请输入科目名称');
+                return;
+            }
+            
+            try {
+                const subjects = JSON.parse(localStorage.getItem('slotSubjects') || '{}');
+                
+                // 保存当前配置
+                subjects[name] = {
+                    students: students,
+                    texts: texts,
+                    punishments: punishments,
+                    durations: durations,
+                    enableTrueRandom: enableTrueRandom,
+                    textsWeights: textsWeights,
+                    punishmentsWeights: punishmentsWeights
+                };
+                
+                localStorage.setItem('slotSubjects', JSON.stringify(subjects));
+                
+                // 更新当前科目
+                currentSubject = name;
+                updateCurrentSubjectDisplay();
+                saveSettingsToStorage();
+                
+                // 更新科目列表
+                updateSubjectsList(subjects);
+                
+                // 清空输入框
+                subjectNameInput.value = '';
+                
+                alert(`科目 "${name}" 保存成功！`);
+            } catch (error) {
+                console.error('保存科目失败:', error);
+                alert('保存科目失败: ' + error.message);
+            }
+        }
+
+        function loadSubjectConfig(name, config) {
+            try {
+                // 加载科目配置
+                students = [...config.students];
+                texts = [...config.texts];
+                punishments = [...config.punishments];
+                durations = [...config.durations];
+                enableTrueRandom = config.enableTrueRandom;
+                textsWeights = {...config.textsWeights};
+                punishmentsWeights = {...config.punishmentsWeights};
+                
+                // 更新当前科目
+                currentSubject = name;
+                updateCurrentSubjectDisplay();
+                
+                // 更新UI
+                updateSettingsUI();
+                
+                // 保存设置
+                saveSettingsToStorage();
+                
+                // 更新科目列表（更新活动状态）
+                const subjects = JSON.parse(localStorage.getItem('slotSubjects') || '{}');
+                updateSubjectsList(subjects);
+                
+                // 重新初始化槽位
+                initSlots();
+                
+                alert(`已切换到科目 "${name}" 的配置`);
+            } catch (error) {
+                console.error('加载科目配置失败:', error);
+                alert('加载科目配置失败: ' + error.message);
+            }
+        }
+
+        function deleteSubject(name) {
+            if (!confirm(`确定要删除科目 "${name}" 吗？`)) {
+                return;
+            }
+            
+            try {
+                const subjects = JSON.parse(localStorage.getItem('slotSubjects') || '{}');
+                
+                // 删除科目
+                delete subjects[name];
+                
+                localStorage.setItem('slotSubjects', JSON.stringify(subjects));
+                
+                // 如果删除的是当前科目，清除当前科目
+                if (currentSubject === name) {
+                    currentSubject = null;
+                    updateCurrentSubjectDisplay();
+                    saveSettingsToStorage();
+                }
+                
+                // 更新科目列表
+                updateSubjectsList(subjects);
+                
+                alert(`科目 "${name}" 已删除`);
+            } catch (error) {
+                console.error('删除科目失败:', error);
+                alert('删除科目失败: ' + error.message);
+            }
+        }
+
+        // 科目管理事件监听器
+        saveSubjectBtn.addEventListener('click', saveCurrentAsSubject);
+
+        // 初始化
+        loadSettings();
+        loadSubjects();
+        updateCurrentSubjectDisplay();
+    </script>
+</body>
+</html>
