@@ -809,15 +809,15 @@
 
                 // 验证数据有效性
                 if (students.length === 0) {
-                    alert('学生名单不能为空！');
+                    showTemporaryMessage('学生名单不能为空！', true);
                     return false;
                 }
                 if (texts.length === 0) {
-                    alert('篇目列表不能为空！');
+                    showTemporaryMessage('篇目列表不能为空！', true);
                     return false;
                 }
                 if (punishments.length === 0) {
-                    alert('惩罚内容不能为空！');
+                    showTemporaryMessage('惩罚内容不能为空！', true);
                     return false;
                 }
 
@@ -852,10 +852,14 @@
                 
                 // 重新初始化槽位
                 initSlots();
+                
+                // 显示保存成功提示
+                showTemporaryMessage('设置已保存');
+                
                 return true;
             } catch (error) {
                 console.error('保存设置失败:', error);
-                alert('保存设置失败: ' + error.message);
+                showTemporaryMessage('保存设置失败', true);
                 return false;
             }
         }
@@ -1338,7 +1342,7 @@
         function saveCurrentAsSubject() {
             const name = subjectNameInput.value.trim();
             if (!name) {
-                alert('请输入科目名称');
+                showTemporaryMessage('请输入科目名称', true);
                 return;
             }
             
@@ -1369,10 +1373,11 @@
                 // 清空输入框
                 subjectNameInput.value = '';
                 
-                alert(`科目 "${name}" 保存成功！`);
+                // 显示临时提示信息
+                showTemporaryMessage(`科目 "${name}" 保存成功！`);
             } catch (error) {
                 console.error('保存科目失败:', error);
-                alert('保存科目失败: ' + error.message);
+                showTemporaryMessage('保存科目失败', true);
             }
         }
 
@@ -1404,10 +1409,11 @@
                 // 重新初始化槽位
                 initSlots();
                 
-                alert(`已切换到科目 "${name}" 的配置`);
+                // 显示临时提示信息
+                showTemporaryMessage(`已切换到科目 "${name}"`);
             } catch (error) {
                 console.error('加载科目配置失败:', error);
-                alert('加载科目配置失败: ' + error.message);
+                showTemporaryMessage('加载科目配置失败', true);
             }
         }
 
@@ -1434,11 +1440,53 @@
                 // 更新科目列表
                 updateSubjectsList(subjects);
                 
-                alert(`科目 "${name}" 已删除`);
+                // 显示临时提示信息
+                showTemporaryMessage(`科目 "${name}" 已删除`);
             } catch (error) {
                 console.error('删除科目失败:', error);
-                alert('删除科目失败: ' + error.message);
+                showTemporaryMessage('删除科目失败', true);
             }
+        }
+
+        // 显示临时提示信息
+        function showTemporaryMessage(message, isError = false) {
+            // 创建提示元素
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            messageElement.style.position = 'fixed';
+            messageElement.style.bottom = '20px';
+            messageElement.style.left = '50%';
+            messageElement.style.transform = 'translateX(-50%)';
+            messageElement.style.padding = '10px 20px';
+            messageElement.style.borderRadius = '5px';
+            messageElement.style.color = 'white';
+            messageElement.style.fontSize = '16px';
+            messageElement.style.zIndex = '2000';
+            messageElement.style.opacity = '0';
+            messageElement.style.transition = 'opacity 0.3s';
+            
+            // 根据是否为错误设置不同的背景色
+            if (isError) {
+                messageElement.style.background = 'rgba(255, 71, 87, 0.9)';
+            } else {
+                messageElement.style.background = 'rgba(46, 204, 113, 0.9)';
+            }
+            
+            // 添加到页面
+            document.body.appendChild(messageElement);
+            
+            // 显示提示
+            setTimeout(() => {
+                messageElement.style.opacity = '1';
+            }, 10);
+            
+            // 3秒后隐藏并移除
+            setTimeout(() => {
+                messageElement.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(messageElement);
+                }, 300);
+            }, 3000);
         }
 
         // 科目管理事件监听器
