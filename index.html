@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>抽签系统</title>
@@ -26,7 +27,7 @@
         }
 
         .slot.wide-column {
-            width: 300px; 
+            width: 300px;
         }
 
         body {
@@ -39,7 +40,8 @@
             margin: 0;
             color: white;
             font-family: Arial;
-            position: relative; /* 为固定定位按钮提供参考 */
+            position: relative;
+            /* 为固定定位按钮提供参考 */
         }
 
         .slots-container {
@@ -55,7 +57,7 @@
             border-radius: 10px;
             background: #2c2c2c;
             position: relative;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
         }
 
         .slot::before,
@@ -118,7 +120,7 @@
             min-height: 60px;
             font-size: 18px;
             padding: 15px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             width: 80%;
             max-width: 500px;
@@ -245,7 +247,8 @@
             color: white;
         }
 
-        .weight-table th, .weight-table td {
+        .weight-table th,
+        .weight-table td {
             padding: 8px;
             text-align: left;
             border-bottom: 1px solid #444;
@@ -298,7 +301,7 @@
         /* 添加历史记录和统计分析样式 */
         .stats-container {
             margin-top: 20px;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
             padding: 15px;
             width: 80%;
@@ -358,6 +361,7 @@
             from {
                 text-shadow: 0 0 5px rgba(255, 71, 87, 0.5);
             }
+
             to {
                 text-shadow: 0 0 15px rgba(255, 71, 87, 0.8);
             }
@@ -439,10 +443,12 @@
         }
     </style>
 </head>
+
 <body>
     <button class="settings-btn" id="settingsBtn">设置</button>
     <h1 class="main-title">二十四中学至尊抽签</h1>
-    <div id="currentSubjectDisplay" style="margin-bottom: 20px; color: #ff4757; font-size: 18px; font-weight: bold;"></div>
+    <div id="currentSubjectDisplay" style="margin-bottom: 20px; color: #ff4757; font-size: 18px; font-weight: bold;">
+    </div>
     <button class="spin-button" id="spinBtn">开始抽签</button>
     <div class="slots-container">
         <div class="slot">
@@ -475,8 +481,10 @@
                 <h3>科目管理</h3>
                 <p>保存当前配置为科目，或切换到已保存的科目配置</p>
                 <div style="display: flex; gap: 10px; margin-top: 15px; align-items: center;">
-                    <input type="text" id="subjectName" placeholder="输入科目名称" style="flex: 1; background: #3a3a3a; border: 1px solid #555; border-radius: 5px; color: white; padding: 8px; font-size: 15px;">
-                    <button id="saveSubject" style="background: #ff4757; border: none; border-radius: 5px; color: white; padding: 8px 15px; cursor: pointer;">保存科目</button>
+                    <input type="text" id="subjectName" placeholder="输入科目名称"
+                        style="flex: 1; background: #3a3a3a; border: 1px solid #555; border-radius: 5px; color: white; padding: 8px; font-size: 15px;">
+                    <button id="saveSubject"
+                        style="background: #ff4757; border: none; border-radius: 5px; color: white; padding: 8px 15px; cursor: pointer;">保存科目</button>
                 </div>
                 <div style="margin-top: 15px;">
                     <h4 style="color: #ddd; margin-bottom: 10px;">已保存科目</h4>
@@ -541,15 +549,18 @@
                 <div style="display: flex; gap: 20px; margin-top: 15px;">
                     <div style="flex: 1;">
                         <div style="margin-bottom: 8px;">学生抽签时长:</div>
-                        <input type="number" id="duration1" min="1000" max="30000" step="1000" style="width: 100%; background: #3a3a3a; border: 1px solid #555; border-radius: 5px; color: white; padding: 8px; font-size: 15px;">
+                        <input type="number" id="duration1" min="1000" max="30000" step="1000"
+                            style="width: 100%; background: #3a3a3a; border: 1px solid #555; border-radius: 5px; color: white; padding: 8px; font-size: 15px;">
                     </div>
                     <div style="flex: 1;">
                         <div style="margin-bottom: 8px;">篇目抽签时长:</div>
-                        <input type="number" id="duration2" min="1000" max="30000" step="1000" style="width: 100%; background: #3a3a3a; border: 1px solid #555; border-radius: 5px; color: white; padding: 8px; font-size: 15px;">
+                        <input type="number" id="duration2" min="1000" max="30000" step="1000"
+                            style="width: 100%; background: #3a3a3a; border: 1px solid #555; border-radius: 5px; color: white; padding: 8px; font-size: 15px;">
                     </div>
                     <div style="flex: 1;">
                         <div style="margin-bottom: 8px;">惩罚抽签时长:</div>
-                        <input type="number" id="duration3" min="1000" max="30000" step="1000" style="width: 100%; background: #3a3a3a; border: 1px solid #555; border-radius: 5px; color: white; padding: 8px; font-size: 15px;">
+                        <input type="number" id="duration3" min="1000" max="30000" step="1000"
+                            style="width: 100%; background: #3a3a3a; border: 1px solid #555; border-radius: 5px; color: white; padding: 8px; font-size: 15px;">
                     </div>
                 </div>
             </div>
@@ -570,7 +581,7 @@
 
     <script>
         // 默认数据
-        const DEFAULT_STUDENTS = ["张一","张二","张三","张四","张五","张六","张七","张八","张九","张十","张十一","张十二","张十三","张十四","张十五","张十六","张十七","张十八","张十九","张二十","张二十一","张二十二","张二十三","张二十四","张二十五","张二十六","张二十七","张二十八","张二十九","张三十","张三十一","张三十二","张三十三","张三十四","张三十五","张三十六","张三十七","张三十八","张三十九","张四十","张四十一","张四十二","张四十三","张四十四","张四十五","张四十六","张四十七"];
+        const DEFAULT_STUDENTS = ["张一", "张二", "张三", "张四", "张五", "张六", "张七", "张八", "张九", "张十", "张十一", "张十二", "张十三", "张十四", "张十五", "张十六", "张十七", "张十八", "张十九", "张二十", "张二十一", "张二十二", "张二十三", "张二十四", "张二十五", "张二十六", "张二十七", "张二十八", "张二十九", "张三十", "张三十一", "张三十二", "张三十三", "张三十四", "张三十五", "张三十六", "张三十七", "张三十八", "张三十九", "张四十", "张四十一", "张四十二", "张四十三", "张四十四", "张四十五", "张四十六", "张四十七"];
         const DEFAULT_TEXTS = ["蜀道难", "蜀相", "望海潮", "扬州慢", "全部"];
         const DEFAULT_PUNISHMENTS = ["演唱绿色", "演唱荷塘月色", "讲一段八卦/故事", "站到背会", "抄写1遍"];
         const DEFAULT_DURATIONS = [18000, 20000, 22000];
@@ -587,7 +598,7 @@
         let punishmentsWeights = {};
 
         const ITEM_HEIGHT = 50;
-        const VISIBLE_ITEMS = 1; 
+        const VISIBLE_ITEMS = 1;
         let isRunning = false;
 
         // 统计数据
@@ -676,7 +687,7 @@
 
             // 更新设置面板中的值
             updateSettingsUI();
-            
+
             // 初始化槽位
             initSlots();
 
@@ -720,15 +731,15 @@
             // 更新篇目权重表格
             const textsTable = document.getElementById('textsWeightTable').querySelector('tbody');
             textsTable.innerHTML = '';
-            
+
             // 计算总权重
             const totalTextsWeight = texts.reduce((sum, text) => sum + (textsWeights[text] || 1), 0);
-            
+
             // 添加每个篇目的行
             texts.forEach(text => {
                 const weight = textsWeights[text] || 1;
                 const probability = ((weight / totalTextsWeight) * 100).toFixed(1);
-                
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${text}</td>
@@ -737,24 +748,24 @@
                 `;
                 textsTable.appendChild(row);
             });
-            
+
             // 添加事件监听器
             textsTable.querySelectorAll('.weight-input').forEach(input => {
                 input.addEventListener('change', updateItemWeight);
             });
-            
+
             // 更新惩罚权重表格
             const punishmentsTable = document.getElementById('punishmentsWeightTable').querySelector('tbody');
             punishmentsTable.innerHTML = '';
-            
+
             // 计算总权重
             const totalPunishmentsWeight = punishments.reduce((sum, punishment) => sum + (punishmentsWeights[punishment] || 1), 0);
-            
+
             // 添加每个惩罚的行
             punishments.forEach(punishment => {
                 const weight = punishmentsWeights[punishment] || 1;
                 const probability = ((weight / totalPunishmentsWeight) * 100).toFixed(1);
-                
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${punishment}</td>
@@ -763,7 +774,7 @@
                 `;
                 punishmentsTable.appendChild(row);
             });
-            
+
             // 添加事件监听器
             punishmentsTable.querySelectorAll('.weight-input').forEach(input => {
                 input.addEventListener('change', updateItemWeight);
@@ -776,19 +787,19 @@
             const item = input.dataset.item;
             const type = input.dataset.type;
             const weight = parseFloat(input.value) || 0;
-            
+
             if (weight < 0) {
                 input.value = 0;
                 return;
             }
-            
+
             // 更新权重
             if (type === 'text') {
                 textsWeights[item] = weight;
             } else if (type === 'punishment') {
                 punishmentsWeights[item] = weight;
             }
-            
+
             // 重新计算概率并更新显示
             updateWeightTables();
         }
@@ -846,16 +857,16 @@
                     currentSubject
                 };
                 localStorage.setItem('slotSettings', JSON.stringify(settings));
-                
+
                 // 更新权重表格
                 updateWeightTables();
-                
+
                 // 重新初始化槽位
                 initSlots();
-                
+
                 // 显示保存成功提示
                 showTemporaryMessage('设置已保存');
-                
+
                 return true;
             } catch (error) {
                 console.error('保存设置失败:', error);
@@ -873,13 +884,13 @@
             enableTrueRandom = true;
             textsWeights = {};
             punishmentsWeights = {};
-            
+
             // 初始化权重
             initializeWeights();
-            
+
             updateSettingsUI();
             localStorage.removeItem('slotSettings');
-            
+
             // 重新初始化槽位
             initSlots();
         }
@@ -904,7 +915,7 @@
         // 初始化单个槽位
         function initSlot(slot, data, repeatTimes) {
             const content = Array(repeatTimes).fill(data).flat();
-            slot.innerHTML = content.map(item => 
+            slot.innerHTML = content.map(item =>
                 `<div class="slot-item">${item}</div>`
             ).join('');
             slot.style.transform = `translateY(${-(content.length * ITEM_HEIGHT / 2)}px)`;
@@ -916,7 +927,7 @@
                 // 如果没有提供权重，使用均匀分布
                 return dataset[Math.floor(Math.random() * dataset.length)];
             }
-            
+
             // 计算总权重
             let totalWeight = 0;
             const weightArray = dataset.map(item => {
@@ -924,10 +935,10 @@
                 totalWeight += weight;
                 return weight;
             });
-            
+
             // 生成一个0到总权重之间的随机数
             const randomValue = Math.random() * totalWeight;
-            
+
             // 根据权重选择项目
             let cumulativeWeight = 0;
             for (let i = 0; i < dataset.length; i++) {
@@ -936,7 +947,7 @@
                     return dataset[i];
                 }
             }
-            
+
             // 防止浮点数精度问题，返回最后一项
             return dataset[dataset.length - 1];
         }
@@ -946,9 +957,9 @@
             return new Promise(resolve => {
                 // 如果使用真随机，提前确定结果
                 const trueRandomResult = useTrueRandom ? getTrueRandomResult(dataset, weights) : null;
-                
+
                 const startY = parseInt(slot.style.transform.match(/-?\d+/)[0]) || 0;
-                
+
                 // 随机选择一个目标索引
                 const targetIndex = Math.floor(Math.random() * dataset.length);
                 // 随机化偏移量，增加随机性
@@ -960,7 +971,7 @@
                 let velocity = 0;
                 const friction = 0.985; // 减小摩擦力，使动画更流畅
                 const acceleration = 0.08; // 减小加速度，使动画更平滑
-                
+
                 // 使用transform的硬件加速
                 slot.style.willChange = 'transform';
                 slot.style.backfaceVisibility = 'hidden';
@@ -976,7 +987,7 @@
                         // 加速阶段，使用更平滑的加速曲线
                         const accelerationFactor = Math.min(progress * 2, 1); // 平滑加速因子
                         velocity = Math.min(velocity + (acceleration + Math.random() * 0.05) * accelerationFactor, 25);
-                    } 
+                    }
                     else {
                         // 减速阶段，使用更平滑的减速
                         velocity *= friction;
@@ -986,12 +997,12 @@
                                 // 找到结果在数组中的位置
                                 const resultIndex = dataset.indexOf(trueRandomResult);
                                 // 计算最终位置，使其显示在中间
-                                const finalY = -(resultIndex * ITEM_HEIGHT) + ITEM_HEIGHT;
-                                
+                                const finalY = -(resultIndex * ITEM_HEIGHT);
+
                                 // 使用CSS动画平滑过渡到最终位置
                                 slot.style.transition = 'transform 0.3s cubic-bezier(0.33, 1, 0.68, 1)';
                                 slot.style.transform = `translateY(${finalY}px) translateZ(0)`;
-                                
+
                                 // 动画结束后清除过渡
                                 setTimeout(() => {
                                     slot.style.transition = '';
@@ -1000,19 +1011,19 @@
                                 }, 300);
                                 return;
                             }
-                            
+
                             // 否则使用动画停止位置确定结果
                             const finalY = Math.round(lastY / ITEM_HEIGHT) * ITEM_HEIGHT;
-                            
+
                             // 使用CSS动画平滑过渡到最终位置
                             slot.style.transition = 'transform 0.3s cubic-bezier(0.33, 1, 0.68, 1)';
                             slot.style.transform = `translateY(${finalY}px) translateZ(0)`;
-                            
+
                             // 动画结束后清除过渡
                             setTimeout(() => {
                                 slot.style.transition = '';
                                 slot.style.willChange = 'auto';
-                                
+
                                 // 计算最终选中的项目
                                 const index = Math.abs(Math.round(finalY / ITEM_HEIGHT)) % dataset.length;
                                 resolve(dataset[index]);
@@ -1054,13 +1065,13 @@
             initSlot(slot3, shuffledPunishments, 50);
 
             try {
-            const results = await Promise.all([
+                const results = await Promise.all([
                     animateSlot(slot1, shuffledStudents, durations[0], enableTrueRandom),
                     animateSlot(slot2, shuffledTexts, durations[1], enableTrueRandom, textsWeights),
                     animateSlot(slot3, shuffledPunishments, durations[2], enableTrueRandom, punishmentsWeights)
-            ]);
+                ]);
 
-            result.innerHTML = `
+                result.innerHTML = `
                 <div>🎉 抽中：${results[0]}</div>
                 <div>📖 篇目：${results[1]}</div>
                 <div>⚡ 惩罚：${results[2]}</div>
@@ -1068,7 +1079,7 @@
 
                 // 保存抽签历史记录
                 saveHistory(results);
-                
+
                 // 更新统计数据
                 updateStatisticsData(results);
             } catch (error) {
@@ -1076,7 +1087,7 @@
                 result.innerHTML = "抽签过程出错，请重试";
             } finally {
                 spinBtn.style.display = 'inline-block'; // 重新显示按钮
-            isRunning = false;
+                isRunning = false;
             }
         }
 
@@ -1088,24 +1099,24 @@
             } else {
                 statistics.students[results[0]]++;
             }
-            
+
             // 更新篇目统计
             if (!statistics.texts[results[1]]) {
                 statistics.texts[results[1]] = 1;
             } else {
                 statistics.texts[results[1]]++;
             }
-            
+
             // 更新惩罚统计
             if (!statistics.punishments[results[2]]) {
                 statistics.punishments[results[2]] = 1;
             } else {
                 statistics.punishments[results[2]]++;
             }
-            
+
             // 保存统计数据
             localStorage.setItem('slotStatistics', JSON.stringify(statistics));
-            
+
             // 更新统计显示
             updateStatistics();
         }
@@ -1113,25 +1124,25 @@
         // 更新统计显示
         function updateStatistics() {
             statsContent.innerHTML = '';
-            
+
             // 创建统计标题
             const createStatSection = (title, data, type) => {
                 const section = document.createElement('div');
                 section.style.width = '100%';
                 section.style.marginBottom = '15px';
-                
+
                 const sectionTitle = document.createElement('h4');
                 sectionTitle.textContent = title;
                 sectionTitle.style.margin = '5px 0';
                 sectionTitle.style.color = '#ddd';
                 section.appendChild(sectionTitle);
-                
+
                 // 获取总次数
                 let totalCount = 0;
                 Object.values(data).forEach(count => {
                     totalCount += count;
                 });
-                
+
                 // 如果没有数据，显示提示
                 if (totalCount === 0) {
                     const noData = document.createElement('div');
@@ -1141,18 +1152,18 @@
                     section.appendChild(noData);
                     return section;
                 }
-                
+
                 // 创建统计项
                 const itemsContainer = document.createElement('div');
                 itemsContainer.style.display = 'flex';
                 itemsContainer.style.flexWrap = 'wrap';
                 itemsContainer.style.gap = '8px';
-                
+
                 // 获取前5个最常见的项目
                 const sortedItems = Object.entries(data)
                     .sort((a, b) => b[1] - a[1])
                     .slice(0, 5);
-                
+
                 sortedItems.forEach(([item, count]) => {
                     const itemElement = document.createElement('div');
                     itemElement.className = 'stats-item';
@@ -1160,9 +1171,9 @@
                     itemElement.textContent = `${item}: ${count}次 (${percentage}%)`;
                     itemsContainer.appendChild(itemElement);
                 });
-                
+
                 section.appendChild(itemsContainer);
-                
+
                 // 添加重置按钮
                 const resetButton = document.createElement('button');
                 resetButton.textContent = '重置此统计';
@@ -1174,7 +1185,7 @@
                 resetButton.style.marginTop = '10px';
                 resetButton.style.cursor = 'pointer';
                 resetButton.style.fontSize = '12px';
-                
+
                 resetButton.addEventListener('click', () => {
                     if (confirm(`确定要重置${title}的统计数据吗？`)) {
                         statistics[type] = {};
@@ -1182,17 +1193,17 @@
                         updateStatistics();
                     }
                 });
-                
+
                 section.appendChild(resetButton);
-                
+
                 return section;
             };
-            
+
             // 添加各部分统计
             statsContent.appendChild(createStatSection('学生抽中统计', statistics.students, 'students'));
             statsContent.appendChild(createStatSection('篇目抽中统计', statistics.texts, 'texts'));
             statsContent.appendChild(createStatSection('惩罚抽中统计', statistics.punishments, 'punishments'));
-            
+
             // 添加全部重置按钮
             const resetAllButton = document.createElement('button');
             resetAllButton.textContent = '重置所有统计数据';
@@ -1204,7 +1215,7 @@
             resetAllButton.style.marginTop = '10px';
             resetAllButton.style.cursor = 'pointer';
             resetAllButton.style.width = '100%';
-            
+
             resetAllButton.addEventListener('click', () => {
                 if (confirm('确定要重置所有统计数据吗？')) {
                     statistics = {
@@ -1216,7 +1227,7 @@
                     updateStatistics();
                 }
             });
-            
+
             statsContent.appendChild(resetAllButton);
         }
 
@@ -1230,12 +1241,12 @@
                     text: results[1],
                     punishment: results[2]
                 });
-                
+
                 // 只保留最近的50条记录
                 if (history.length > 50) {
                     history.shift();
                 }
-                
+
                 localStorage.setItem('slotHistory', JSON.stringify(history));
             } catch (error) {
                 console.error('保存历史记录失败:', error);
@@ -1244,23 +1255,23 @@
 
         // 事件监听器
         spinBtn.addEventListener('click', startSpin);
-        
+
         settingsBtn.addEventListener('click', () => {
             settingsModal.style.display = 'flex';
         });
-        
+
         closeSettings.addEventListener('click', () => {
             settingsModal.style.display = 'none';
         });
-        
+
         saveSettings.addEventListener('click', () => {
             if (saveSettingsToStorage()) {
                 settingsModal.style.display = 'none';
             }
         });
-        
+
         resetSettings.addEventListener('click', resetSettingsToDefault);
-        
+
         toggleStats.addEventListener('click', () => {
             if (statsContainer.style.display === 'block') {
                 statsContainer.style.display = 'none';
@@ -1269,35 +1280,35 @@
                 updateStatistics();
             }
         });
-        
+
         // 标签切换事件
         document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
+            tab.addEventListener('click', function () {
                 // 获取当前标签组
                 const tabGroup = this.parentElement;
-                
+
                 // 移除所有标签的活动状态
                 tabGroup.querySelectorAll('.tab').forEach(t => {
                     t.classList.remove('active');
                 });
-                
+
                 // 添加当前标签的活动状态
                 this.classList.add('active');
-                
+
                 // 获取目标内容ID
                 const targetId = this.dataset.tab;
-                
+
                 // 隐藏所有内容
                 const tabContents = tabGroup.parentElement.querySelectorAll('.tab-content');
                 tabContents.forEach(content => {
                     content.classList.remove('active');
                 });
-                
+
                 // 显示目标内容
                 document.getElementById(targetId).classList.add('active');
             });
         });
-        
+
         // 点击模态框外部关闭
         settingsModal.addEventListener('click', (e) => {
             if (e.target === settingsModal) {
@@ -1330,7 +1341,7 @@
 
         function updateSubjectsList(subjects) {
             subjectsList.innerHTML = '';
-            
+
             if (Object.keys(subjects).length === 0) {
                 const noSubjects = document.createElement('div');
                 noSubjects.textContent = '暂无保存的科目';
@@ -1338,18 +1349,18 @@
                 subjectsList.appendChild(noSubjects);
                 return;
             }
-            
+
             for (const [name, config] of Object.entries(subjects)) {
                 const subjectBtn = document.createElement('div');
                 subjectBtn.className = 'subject-btn';
                 if (currentSubject === name) {
                     subjectBtn.classList.add('active');
                 }
-                
+
                 const btnContent = document.createElement('span');
                 btnContent.textContent = name;
                 subjectBtn.appendChild(btnContent);
-                
+
                 const deleteIcon = document.createElement('span');
                 deleteIcon.className = 'delete-icon';
                 deleteIcon.innerHTML = '×';
@@ -1358,11 +1369,11 @@
                     deleteSubject(name);
                 });
                 subjectBtn.appendChild(deleteIcon);
-                
+
                 subjectBtn.addEventListener('click', () => {
                     loadSubjectConfig(name, config);
                 });
-                
+
                 subjectsList.appendChild(subjectBtn);
             }
         }
@@ -1373,10 +1384,10 @@
                 showTemporaryMessage('请输入科目名称', true);
                 return;
             }
-            
+
             try {
                 const subjects = JSON.parse(localStorage.getItem('slotSubjects') || '{}');
-                
+
                 // 保存当前配置
                 subjects[name] = {
                     students: students,
@@ -1387,20 +1398,20 @@
                     textsWeights: textsWeights,
                     punishmentsWeights: punishmentsWeights
                 };
-                
+
                 localStorage.setItem('slotSubjects', JSON.stringify(subjects));
-                
+
                 // 更新当前科目
                 currentSubject = name;
                 updateCurrentSubjectDisplay();
                 saveSettingsToStorage();
-                
+
                 // 更新科目列表
                 updateSubjectsList(subjects);
-                
+
                 // 清空输入框
                 subjectNameInput.value = '';
-                
+
                 // 显示临时提示信息
                 showTemporaryMessage(`科目 "${name}" 保存成功！`);
             } catch (error) {
@@ -1417,26 +1428,26 @@
                 punishments = [...config.punishments];
                 durations = [...config.durations];
                 enableTrueRandom = config.enableTrueRandom;
-                textsWeights = {...config.textsWeights};
-                punishmentsWeights = {...config.punishmentsWeights};
-                
+                textsWeights = { ...config.textsWeights };
+                punishmentsWeights = { ...config.punishmentsWeights };
+
                 // 更新当前科目
                 currentSubject = name;
                 updateCurrentSubjectDisplay();
-                
+
                 // 更新UI
                 updateSettingsUI();
-                
+
                 // 保存设置
                 saveSettingsToStorage();
-                
+
                 // 更新科目列表（更新活动状态）
                 const subjects = JSON.parse(localStorage.getItem('slotSubjects') || '{}');
                 updateSubjectsList(subjects);
-                
+
                 // 重新初始化槽位
                 initSlots();
-                
+
                 // 显示临时提示信息
                 showTemporaryMessage(`已切换到科目 "${name}"`);
             } catch (error) {
@@ -1449,25 +1460,25 @@
             if (!confirm(`确定要删除科目 "${name}" 吗？`)) {
                 return;
             }
-            
+
             try {
                 const subjects = JSON.parse(localStorage.getItem('slotSubjects') || '{}');
-                
+
                 // 删除科目
                 delete subjects[name];
-                
+
                 localStorage.setItem('slotSubjects', JSON.stringify(subjects));
-                
+
                 // 如果删除的是当前科目，清除当前科目
                 if (currentSubject === name) {
                     currentSubject = null;
                     updateCurrentSubjectDisplay();
                     saveSettingsToStorage();
                 }
-                
+
                 // 更新科目列表
                 updateSubjectsList(subjects);
-                
+
                 // 显示临时提示信息
                 showTemporaryMessage(`科目 "${name}" 已删除`);
             } catch (error) {
@@ -1479,11 +1490,11 @@
         // 消息队列和消息容器
         const messageQueue = [];
         let messageContainer = null;
-        
+
         // 创建消息容器
         function createMessageContainer() {
             if (messageContainer) return;
-            
+
             messageContainer = document.createElement('div');
             messageContainer.style.position = 'fixed';
             messageContainer.style.bottom = '20px';
@@ -1496,7 +1507,7 @@
             messageContainer.style.width = 'auto';
             messageContainer.style.maxWidth = '80%';
             messageContainer.style.pointerEvents = 'none'; // 防止消息阻挡点击
-            
+
             document.body.appendChild(messageContainer);
         }
 
@@ -1504,7 +1515,7 @@
         function showTemporaryMessage(message, isError = false) {
             // 确保消息容器存在
             createMessageContainer();
-            
+
             // 创建提示元素
             const messageElement = document.createElement('div');
             messageElement.textContent = message;
@@ -1521,50 +1532,50 @@
             messageElement.style.willChange = 'transform, opacity'; // 提示浏览器需要优化这些属性
             messageElement.style.backfaceVisibility = 'hidden'; // 增强硬件加速
             messageElement.style.perspective = '1000px'; // 3D空间效果，增强硬件加速
-            
+
             // 根据是否为错误设置不同的背景色
             if (isError) {
                 messageElement.style.background = 'rgba(255, 71, 87, 0.9)';
             } else {
                 messageElement.style.background = 'rgba(46, 204, 113, 0.9)';
             }
-            
+
             // 添加到容器
             messageContainer.appendChild(messageElement);
-            
+
             // 强制回流，确保动画正常执行
             void messageElement.offsetWidth;
-            
+
             // 显示提示（淡入 + 上移）
             requestAnimationFrame(() => {
                 messageElement.style.opacity = '1';
                 messageElement.style.transform = 'translateY(0) translateZ(0)';
             });
-            
+
             // 3秒后隐藏并移除
             const removeTimeout = setTimeout(() => {
                 messageElement.style.opacity = '0';
                 messageElement.style.transform = 'translateY(-20px) translateZ(0)';
-                
+
                 const animationTimeout = setTimeout(() => {
                     if (messageElement.parentNode) {
                         messageElement.parentNode.removeChild(messageElement);
                     }
-                    
+
                     // 如果没有更多消息，移除容器
                     if (messageContainer && messageContainer.children.length === 0) {
                         document.body.removeChild(messageContainer);
                         messageContainer = null;
                     }
                 }, 300);
-                
+
                 // 存储动画超时引用，以便在需要时清除
                 messageElement._animationTimeout = animationTimeout;
             }, 3000);
-            
+
             // 存储移除超时引用，以便在需要时清除
             messageElement._removeTimeout = removeTimeout;
-            
+
             return messageElement;
         }
 
@@ -1577,4 +1588,5 @@
         updateCurrentSubjectDisplay();
     </script>
 </body>
+
 </html>
